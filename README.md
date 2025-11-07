@@ -109,7 +109,7 @@ fn stack_format_it(template: &str, insert: &str, fallback: &str) -> String {
 ```
 
 v2
-```
+```rust
 /// Formats a message with multiple variable parts inserted at {} placeholders.
 ///
 /// ## Project Context
