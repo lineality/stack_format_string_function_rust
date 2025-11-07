@@ -113,9 +113,23 @@ v2
 /// Formats a message with multiple variable parts inserted at {} placeholders.
 ///
 /// ## Project Context
-/// Provides simple string formatting for UI messages and error messages without
-/// heap allocation in the formatting logic itself. Used for status messages,
-/// notifications, error reports, and other non-critical display text.
+/// Provides simple string formatting for UI messages and error messages using
+/// stack-allocated buffers. Designed for display text where formatting failure
+/// can gracefully degrade to a fallback message without compromising program
+/// operation.
+///
+/// **Use for:**
+/// - Status bar updates
+/// - User notifications
+/// - Progress indicators
+/// - Display-only error messages
+///
+/// **Do NOT use for:**
+/// - output that may exceed a known size
+/// - where a known default is less optimal than erroring-out
+///
+/// Stack allocation makes this function safer and more predictable than
+/// heap-based formatting for bounded display messages.
 ///
 /// ## Operation
 /// Takes a template string with one or more "{}" placeholders and inserts variable
@@ -123,9 +137,9 @@ v2
 /// corresponding insert string.
 ///
 /// Examples:
-/// - ("inserted {} bytes", &["42"]) -> "inserted 42 bytes"
-/// - ("range: start={} > end={}", &["10", "5"]) -> "range: start=10 > end=5"
-/// - ("a {} b {} c {}", &["1", "2", "3"]) -> "a 1 b 2 c 3"
+/// - stack_format_it("inserted {} bytes", &["42"]) -> "inserted 42 bytes"
+/// - stack_format_it("range: start={} > end={}", &["10", "5"]) -> "range: start=10 > end=5"
+/// - stack_format_it("a {} b {} c {}", &["1", "2", "3"]) -> "a 1 b 2 c 3"
 ///
 /// ## Safety & Error Handling
 /// - No panic: Always returns a valid string (formatted or fallback)
@@ -159,10 +173,9 @@ v2
 ///     &[&num1, &num2],
 ///     "Invalid byte range"
 /// );
-/// ```
 fn stack_format_it(template: &str, inserts: &[&str], fallback: &str) -> String {
     // Internal stack buffer for result
-    let mut buf = [0u8; 256];
+    let mut buf = [0u8; 128];
 
     // Maximum number of inserts to prevent abuse
     const MAX_INSERTS: usize = 8;
