@@ -30,7 +30,7 @@
 /// ## Returns
 /// Formatted string on success, fallback string on any error (always valid)
 ///
-/// # example use:
+/// ## Example use:
 /// let msg = stack_format_it("The cat in the {}", "hat", "");
 /// ##  Returns "The cat in the hat" or "" on error
 ///
