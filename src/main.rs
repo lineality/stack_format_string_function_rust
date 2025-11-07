@@ -1,9 +1,11 @@
 /// Formats a message with multiple variable parts inserted at {} placeholders.
 ///
 /// ## Project Context
-/// Provides simple string formatting for UI messages and error messages without
-/// heap allocation in the formatting logic itself. Used for status messages,
+/// - Provides simple string formatting for UI messages and error messages without
+/// heap allocation in the formatting logic itself.
+/// - Used for status messages,
 /// notifications, error reports, and other non-critical display text.
+/// - Default string in case of error.
 ///
 /// ## Operation
 /// Takes a template string with one or more "{}" placeholders and inserts variable
@@ -173,6 +175,8 @@ fn stack_format_it(template: &str, inserts: &[&str], fallback: &str) -> String {
         }
     }
 }
+
+// Demo of stack_format_it()
 fn main() {
     println!("=== stack_format_it() Test Examples ===\n");
 
