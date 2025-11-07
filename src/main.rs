@@ -1,11 +1,23 @@
 /// Formats a message with multiple variable parts inserted at {} placeholders.
 ///
 /// ## Project Context
-/// - Provides simple string formatting for UI messages and error messages without
-/// heap allocation in the formatting logic itself.
-/// - Used for status messages,
-/// notifications, error reports, and other non-critical display text.
-/// - Default string in case of error.
+/// Provides simple string formatting for UI messages and error messages using
+/// stack-allocated buffers. Designed for display text where formatting failure
+/// can gracefully degrade to a fallback message without compromising program
+/// operation.
+///
+/// **Use for:**
+/// - Status bar updates
+/// - User notifications
+/// - Progress indicators
+/// - Display-only error messages
+///
+/// **Do NOT use for:**
+/// - output that may exceed a known size
+/// - where a known default is less optimal than erroring-out
+///
+/// Stack allocation makes this function safer and more predictable than
+/// heap-based formatting for bounded display messages.
 ///
 /// ## Operation
 /// Takes a template string with one or more "{}" placeholders and inserts variable
@@ -51,7 +63,7 @@
 /// );
 fn stack_format_it(template: &str, inserts: &[&str], fallback: &str) -> String {
     // Internal stack buffer for result
-    let mut buf = [0u8; 256];
+    let mut buf = [0u8; 128];
 
     // Maximum number of inserts to prevent abuse
     const MAX_INSERTS: usize = 8;
