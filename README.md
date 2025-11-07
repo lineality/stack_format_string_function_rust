@@ -31,7 +31,7 @@
 /// Formatted string on success, fallback string on any error (always valid)
 ///
 /// ## Example use:
-/// let msg = stack_format_it("The cat in the {}", "hat", "");
+/// let formatted_string = stack_format_it("The cat in the {}", "hat", "");
 /// ##  Returns "The cat in the hat" or "" on error
 ///
 fn stack_format_it(template: &str, insert: &str, fallback: &str) -> String {
